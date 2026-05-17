@@ -3,18 +3,20 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Wasl — Your Umrah, Connected.</title>
+<title>Wasl — Your Umrah & Hajj, Connected.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Manrope:wght@300;400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@300;400;500;600;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --emerald-1:#0B2E26;
     --emerald-2:#134236;
     --emerald-3:#1A4D3E;
+    --emerald-deep:#082019;
     --gold:#D6B25E;
     --gold-soft:#E6C97A;
     --gold-deep:#B8963F;
+    --gold-pale:#F3E4B5;
     --ivory:#F7F5F0;
     --cream:#FBFAF7;
     --white:#FFFFFF;
@@ -36,29 +38,47 @@
   }
   ::selection{background:var(--gold);color:var(--emerald-1)}
 
+  /* ── Cursor glow (subtle, optional) ── */
+  .cursor-glow{
+    position:fixed;width:400px;height:400px;border-radius:50%;
+    background:radial-gradient(circle, rgba(214,178,94,0.08), transparent 70%);
+    pointer-events:none;z-index:1;
+    transform:translate(-50%,-50%);
+    transition:opacity .3s;
+    mix-blend-mode:multiply;
+  }
+
   /* ── NAV ─────────────────────────────────────────────── */
   nav{
     position:fixed;top:0;left:0;right:0;z-index:100;
     padding:18px 48px;
     display:flex;justify-content:space-between;align-items:center;
-    backdrop-filter:blur(14px);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
     background:rgba(247,245,240,0.78);
     border-bottom:1px solid rgba(232,229,223,0);
-    transition:border-color .3s, padding .3s;
+    transition:border-color .3s, padding .3s, background .3s;
   }
-  nav.scrolled{border-bottom-color:var(--border);padding:12px 48px}
+  nav.scrolled{border-bottom-color:var(--border);padding:12px 48px;background:rgba(247,245,240,0.92)}
   .logo{
-    display:flex;align-items:center;gap:10px;
-    font-family:var(--display);font-size:26px;font-weight:600;
+    display:flex;align-items:center;gap:12px;
+    font-family:var(--display);font-size:28px;font-weight:600;
     color:var(--emerald-1);letter-spacing:-0.5px;
+    text-decoration:none;
   }
   .logo-mark{
-    width:34px;height:34px;border-radius:9px;
+    width:42px;height:42px;border-radius:11px;
     background:linear-gradient(135deg,var(--emerald-1),var(--emerald-2));
     display:grid;place-items:center;position:relative;
-    box-shadow:0 4px 14px rgba(11,46,38,0.25);
+    box-shadow:0 6px 18px rgba(11,46,38,0.25);
+    overflow:hidden;
   }
-  .logo-mark svg{width:20px;height:20px}
+  .logo-mark::before{
+    content:'';position:absolute;inset:0;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'><polygon points='30,4 36,18 50,18 39,28 44,42 30,33 16,42 21,28 10,18 24,18' fill='none' stroke='%23D6B25E' stroke-width='0.8' opacity='0.15'/></svg>");
+  }
+  .logo-mark svg{width:24px;height:24px;position:relative;z-index:2}
+  .logo-text-wrap{display:flex;flex-direction:column;line-height:1}
+  .logo-arabic{font-family:var(--arabic);font-size:11px;color:var(--gold-deep);margin-top:2px;letter-spacing:0}
   .nav-links{display:flex;gap:38px;align-items:center}
   .nav-links a{
     color:var(--ink);text-decoration:none;font-size:14px;font-weight:500;
@@ -72,7 +92,7 @@
   .nav-links a:hover::after{width:100%}
   .nav-cta{
     background:linear-gradient(135deg,var(--emerald-1),var(--emerald-2));
-    color:#fff !important;padding:10px 22px;border-radius:999px;
+    color:#fff !important;padding:11px 24px;border-radius:999px;
     font-weight:600;font-size:13px;
     box-shadow:0 4px 14px rgba(11,46,38,0.2);
     transition:transform .2s, box-shadow .2s;
@@ -84,8 +104,8 @@
   .hero{
     min-height:100vh;
     background:
-      radial-gradient(ellipse at 20% 0%, rgba(214,178,94,0.08), transparent 50%),
-      radial-gradient(ellipse at 80% 100%, rgba(11,46,38,0.06), transparent 50%),
+      radial-gradient(ellipse at 20% 0%, rgba(214,178,94,0.1), transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(11,46,38,0.07), transparent 50%),
       linear-gradient(180deg,var(--ivory) 0%, var(--cream) 100%);
     padding:140px 48px 80px;
     display:grid;
@@ -96,15 +116,15 @@
     overflow:hidden;
   }
   .hero::before{
-    content:'';position:absolute;top:10%;right:-10%;width:600px;height:600px;
-    background:radial-gradient(circle, rgba(214,178,94,0.06), transparent 70%);
+    content:'';position:absolute;top:5%;right:-10%;width:600px;height:600px;
+    background:radial-gradient(circle, rgba(214,178,94,0.08), transparent 70%);
     border-radius:50%;pointer-events:none;
+    animation:slowSpin 30s linear infinite;
   }
-  /* Islamic pattern overlay */
   .hero::after{
     content:'';position:absolute;inset:0;pointer-events:none;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><g fill='none' stroke='%230B2E26' stroke-width='0.4' opacity='0.04'><path d='M30 0L60 30L30 60L0 30Z'/><circle cx='30' cy='30' r='12'/></g></svg>");
-    opacity:0.5;
+    opacity:0.6;
   }
   .hero-content{position:relative;z-index:2;animation:fadeUp 1s ease both}
   .eyebrow{
@@ -116,10 +136,10 @@
     letter-spacing:1.5px;text-transform:uppercase;
     margin-bottom:28px;
   }
-  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s ease infinite}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s ease infinite;box-shadow:0 0 10px var(--gold)}
   .hero h1{
     font-family:var(--display);
-    font-size:clamp(48px,6vw,84px);
+    font-size:clamp(48px,6.2vw,88px);
     font-weight:500;
     line-height:1.02;
     color:var(--emerald-1);
@@ -128,15 +148,22 @@
   }
   .hero h1 em{
     font-style:italic;color:var(--gold-deep);
-    font-weight:400;
+    font-weight:400;display:inline-block;
+    position:relative;
+  }
+  .hero h1 em::after{
+    content:'';position:absolute;bottom:6px;left:0;right:0;height:8px;
+    background:linear-gradient(90deg, transparent, rgba(214,178,94,0.25), transparent);
+    z-index:-1;
   }
   .hero h1 .arabic{
     font-family:var(--arabic);font-style:normal;
-    color:var(--gold-deep);font-size:0.65em;
-    margin-left:8px;vertical-align:middle;
+    color:var(--gold-deep);font-size:0.6em;
+    margin-left:12px;vertical-align:middle;
+    opacity:0.85;
   }
   .hero-sub{
-    font-size:18px;color:var(--muted);max-width:520px;
+    font-size:18px;color:var(--muted);max-width:540px;
     margin-bottom:40px;line-height:1.65;
   }
   .hero-ctas{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:50px}
@@ -148,8 +175,15 @@
     box-shadow:0 8px 24px rgba(11,46,38,0.25);
     transition:transform .25s, box-shadow .25s;
     border:none;cursor:pointer;font-family:var(--body);
+    position:relative;overflow:hidden;
+  }
+  .btn-primary::before{
+    content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+    background:linear-gradient(90deg,transparent,rgba(214,178,94,0.3),transparent);
+    transition:left .6s;
   }
   .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(11,46,38,0.35)}
+  .btn-primary:hover::before{left:100%}
   .btn-secondary{
     background:transparent;color:var(--emerald-1);
     padding:16px 28px;border-radius:14px;
@@ -161,22 +195,34 @@
   }
   .btn-secondary:hover{background:var(--emerald-1);color:#fff}
 
-  .hero-stats{display:flex;gap:48px;padding-top:30px;border-top:1px solid var(--border);max-width:520px}
-  .stat-num{font-family:var(--display);font-size:32px;font-weight:600;color:var(--emerald-1);line-height:1}
+  .hero-stats{display:flex;gap:48px;padding-top:30px;border-top:1px solid var(--border);max-width:560px}
+  .stat-num{font-family:var(--display);font-size:34px;font-weight:600;color:var(--emerald-1);line-height:1}
   .stat-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-top:6px}
 
-  /* ── PHONE MOCKUP ──────────────────────────────────── */
+  /* ── PHONE MOCKUP — toggleable screens ─────────────── */
   .phone-stage{
-    position:relative;display:flex;justify-content:center;align-items:center;
-    min-height:680px;
+    position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;
+    min-height:720px;
     perspective:1500px;
   }
   .phone-glow{
-    position:absolute;width:420px;height:600px;
-    background:radial-gradient(ellipse, rgba(214,178,94,0.18), transparent 70%);
-    border-radius:50%;filter:blur(40px);
+    position:absolute;width:440px;height:620px;
+    background:radial-gradient(ellipse, rgba(214,178,94,0.22), transparent 70%);
+    border-radius:50%;filter:blur(50px);
     animation:floatGlow 6s ease-in-out infinite;
   }
+  /* decorative arabic floating tokens */
+  .float-token{
+    position:absolute;font-family:var(--arabic);
+    color:var(--gold);opacity:0.18;
+    pointer-events:none;font-size:48px;
+    animation:floatToken 8s ease-in-out infinite;
+  }
+  .float-token:nth-child(1){top:8%;left:5%;animation-delay:0s}
+  .float-token:nth-child(2){top:14%;right:6%;animation-delay:2s;font-size:36px}
+  .float-token:nth-child(3){bottom:18%;left:0%;animation-delay:4s;font-size:42px}
+  .float-token:nth-child(4){bottom:8%;right:2%;animation-delay:1s;font-size:32px}
+
   .phone{
     width:300px;height:620px;
     background:#0a0a0a;
@@ -195,7 +241,7 @@
   .phone-screen{
     width:100%;height:100%;border-radius:36px;
     overflow:hidden;position:relative;
-    background:linear-gradient(180deg,#0B2E26 0%, #0F3A2E 35%, var(--ivory) 35%);
+    background:#0B2E26;
   }
   .notch{
     position:absolute;top:10px;left:50%;transform:translateX(-50%);
@@ -206,12 +252,21 @@
     display:flex;justify-content:space-between;align-items:center;
     color:#fff;font-size:11px;font-weight:600;z-index:4;
   }
-  .screen-content{
+
+  /* Screen variants — swap with .active */
+  .screen{
     position:absolute;inset:0;padding:50px 18px 0;
+    opacity:0;pointer-events:none;
+    transform:translateY(8px);
+    transition:opacity .5s ease, transform .5s ease;
     overflow:hidden;
   }
+  .screen.active{opacity:1;pointer-events:auto;transform:none}
 
-  /* Phone hero header (Asr / 15:44) */
+  /* Screen 1: Home (Theme1 reference) */
+  .screen.home{
+    background:linear-gradient(180deg,#0B2E26 0%, #0F3A2E 35%, var(--ivory) 35%);
+  }
   .ph-greeting{color:var(--gold);font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:2px}
   .ph-name{font-family:var(--display);color:#fff;font-size:32px;font-weight:500;line-height:1;margin-bottom:14px}
   .ph-prayer-card{
@@ -223,8 +278,6 @@
   .ph-prayer-name{font-family:var(--display);color:#fff;font-size:26px;font-weight:500;line-height:1}
   .ph-prayer-meta{color:rgba(255,255,255,0.6);font-size:10px;margin-top:4px}
   .ph-prayer-time{font-family:var(--display);color:var(--gold);font-size:30px;font-weight:500}
-
-  /* Group card */
   .ph-card{
     background:#fff;border-radius:14px;padding:14px;
     box-shadow:0 4px 14px rgba(11,46,38,0.06);
@@ -243,14 +296,11 @@
     flex:1;padding:9px;border-radius:9px;
     font-size:10px;font-weight:600;text-align:center;
   }
-
-  /* feature tile grid */
   .ph-tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
   .ph-tile{
     background:#fff;border-radius:11px;padding:10px;
     display:flex;align-items:center;gap:8px;
-    box-shadow:0 2px 8px rgba(11,46,38,0.04);
-    position:relative;
+    box-shadow:0 2px 8px rgba(11,46,38,0.04);position:relative;
   }
   .ph-tile-ic{
     width:30px;height:30px;border-radius:8px;
@@ -266,15 +316,201 @@
     color:var(--emerald-1);font-size:8px;
   }
 
+  /* Screen 2: Group Map */
+  .screen.map{background:#E8DDC6}
+  .map-bg{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse at 50% 45%, #D9C9A3, #C8B68A 70%),
+      #C8B68A;
+  }
+  .map-bg svg{position:absolute;inset:0;width:100%;height:100%}
+  .map-overlay{position:absolute;inset:0;padding:50px 14px 14px;color:#fff;z-index:3}
+  .map-top{
+    background:rgba(11,46,38,0.92);backdrop-filter:blur(8px);
+    border-radius:14px;padding:10px 12px;
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:8px;
+  }
+  .map-top-name{font-size:11px;font-weight:700}
+  .map-top-meta{font-size:8.5px;color:rgba(255,255,255,0.7);margin-top:2px}
+  .map-top-live{
+    background:var(--gold);color:var(--emerald-1);
+    font-size:8px;font-weight:700;padding:3px 8px;border-radius:6px;
+    letter-spacing:0.5px;
+  }
+  .map-pin{
+    position:absolute;width:34px;height:34px;border-radius:50%;
+    background:#fff;border:2.5px solid var(--emerald-2);
+    display:grid;place-items:center;
+    box-shadow:0 4px 12px rgba(0,0,0,0.2);
+    font-size:9px;font-weight:700;color:var(--emerald-1);
+  }
+  .map-pin.you{border-color:var(--gold)}
+  .map-pin.away{border-color:#E53935}
+  .map-pin-label{
+    position:absolute;background:#fff;padding:3px 6px;border-radius:5px;
+    font-size:8px;font-weight:700;color:var(--emerald-1);
+    box-shadow:0 2px 6px rgba(0,0,0,0.12);
+    white-space:nowrap;
+  }
+  /* zone wedge */
+  .zone-wedge{
+    position:absolute;width:120px;height:120px;
+    background:radial-gradient(circle, rgba(214,178,94,0.4), rgba(214,178,94,0));
+    border-radius:50%;
+    animation:pulse2 2.5s ease-in-out infinite;
+  }
+  .map-bottom-card{
+    position:absolute;bottom:14px;left:14px;right:14px;
+    background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);
+    border-radius:12px;padding:10px 12px;
+    display:flex;align-items:center;gap:10px;
+    color:var(--ink);box-shadow:0 6px 18px rgba(0,0,0,0.15);
+  }
+  .map-bottom-icon{
+    width:30px;height:30px;border-radius:8px;
+    background:rgba(11,46,38,0.08);display:grid;place-items:center;color:var(--emerald-1);
+  }
+
+  /* Screen 3: Quran */
+  .screen.quran{
+    background:linear-gradient(180deg,#0B2E26,#0F3A2E);color:#fff;
+    padding-top:50px;
+  }
+  .quran-top{padding:10px 16px;border-bottom:1px solid rgba(214,178,94,0.15);margin-bottom:14px}
+  .quran-back{font-size:11px;color:var(--gold);font-weight:600}
+  .quran-surah-name{font-family:var(--display);font-size:24px;color:#fff;margin-top:8px}
+  .quran-surah-meta{font-size:10px;color:rgba(255,255,255,0.6);margin-top:4px}
+  .quran-ayah{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.06)}
+  .ayah-num{
+    display:inline-grid;place-items:center;
+    width:22px;height:22px;border-radius:50%;
+    background:rgba(214,178,94,0.18);color:var(--gold);
+    font-size:10px;font-weight:700;margin-bottom:10px;
+  }
+  .ayah-arabic{
+    font-family:var(--arabic);font-size:20px;direction:rtl;
+    text-align:right;color:#fff;line-height:1.9;margin-bottom:8px;
+  }
+  .ayah-arabic .red{color:#FF8A8A}
+  .ayah-arabic .gold{color:var(--gold)}
+  .ayah-trans{font-size:10.5px;color:rgba(255,255,255,0.75);line-height:1.55;font-style:italic}
+  .quran-player{
+    position:absolute;bottom:0;left:0;right:0;
+    background:rgba(11,46,38,0.95);backdrop-filter:blur(10px);
+    padding:12px 16px;border-top:1px solid rgba(214,178,94,0.15);
+    display:flex;align-items:center;gap:10px;
+  }
+  .play-btn{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--gold);color:var(--emerald-1);
+    display:grid;place-items:center;
+  }
+  .play-bar{flex:1;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;position:relative}
+  .play-bar::after{content:'';position:absolute;left:0;top:0;width:40%;height:100%;background:var(--gold);border-radius:2px}
+  .play-time{font-size:9px;color:rgba(255,255,255,0.6)}
+
+  /* Screen 4: Bills */
+  .screen.bills{background:var(--ivory);padding-top:48px}
+  .bills-head{padding:8px 16px 14px}
+  .bills-back{font-size:11px;color:var(--emerald-1);font-weight:600;margin-bottom:6px}
+  .bills-title{font-family:var(--display);font-size:26px;color:var(--emerald-1);font-weight:600}
+  .bills-receipt{
+    margin:0 14px;background:#fff;border-radius:14px;padding:14px;
+    box-shadow:0 4px 14px rgba(11,46,38,0.06);margin-bottom:10px;
+  }
+  .receipt-merchant{font-size:11px;font-weight:700;color:var(--ink)}
+  .receipt-meta{font-size:9px;color:var(--muted);margin-bottom:10px}
+  .receipt-line{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:10px;border-bottom:1px dashed var(--border)}
+  .receipt-line:last-of-type{border-bottom:none;margin-top:4px;font-weight:700;color:var(--emerald-1);font-size:11px;padding-top:8px;border-top:1px solid var(--border)}
+  .receipt-line .name{flex:1}
+  .receipt-line .assigned{
+    background:rgba(11,46,38,0.08);color:var(--emerald-1);
+    font-size:8px;font-weight:700;padding:2px 7px;border-radius:4px;margin-left:6px;
+  }
+  .ocr-banner{
+    margin:0 14px 10px;background:linear-gradient(135deg,var(--gold-pale),var(--gold-soft));
+    border-radius:10px;padding:8px 12px;
+    display:flex;align-items:center;gap:8px;font-size:9.5px;
+    color:#3A2E1F;font-weight:600;
+  }
+  .ocr-banner .ic{
+    width:22px;height:22px;border-radius:6px;background:var(--gold);color:var(--emerald-1);
+    display:grid;place-items:center;flex-shrink:0;
+  }
+  .split-pills{display:flex;gap:6px;padding:0 14px;margin-top:6px;flex-wrap:wrap}
+  .split-pill{
+    background:#fff;border:1px solid var(--border);
+    padding:7px 10px;border-radius:8px;font-size:9px;font-weight:600;
+    display:flex;align-items:center;gap:5px;
+  }
+  .split-pill .av{
+    width:16px;height:16px;border-radius:50%;background:var(--emerald-2);color:#fff;
+    display:grid;place-items:center;font-size:7px;font-weight:700;
+  }
+
+  /* Screen 5: SOS */
+  .screen.sos{
+    background:#B71C1C;color:#fff;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:50px 18px;
+  }
+  .sos-ring{
+    position:relative;width:140px;height:140px;
+    display:grid;place-items:center;margin-bottom:24px;
+  }
+  .sos-ring::before, .sos-ring::after{
+    content:'';position:absolute;inset:0;border-radius:50%;
+    background:rgba(255,255,255,0.18);
+    animation:sosPulse 1.6s ease-out infinite;
+  }
+  .sos-ring::after{animation-delay:.6s}
+  .sos-core{
+    width:90px;height:90px;border-radius:50%;
+    background:#fff;color:#B71C1C;
+    display:grid;place-items:center;font-size:32px;font-weight:800;
+    position:relative;z-index:2;font-family:var(--display);
+  }
+  .sos-title{font-family:var(--display);font-size:30px;font-weight:600;margin-bottom:8px}
+  .sos-sub{font-size:12px;text-align:center;opacity:0.85;max-width:220px;line-height:1.5;margin-bottom:24px}
+  .sos-meta{
+    display:flex;gap:8px;font-size:10px;
+    background:rgba(255,255,255,0.12);padding:8px 12px;border-radius:8px;
+  }
+
+  /* Screen Switcher (dots under phone) */
+  .screen-tabs{
+    margin-top:30px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;position:relative;z-index:3;
+  }
+  .screen-tab{
+    padding:8px 14px;border-radius:999px;background:rgba(11,46,38,0.06);
+    border:1px solid transparent;
+    font-size:11px;font-weight:600;color:var(--emerald-1);
+    cursor:pointer;transition:all .25s;
+    font-family:var(--body);
+  }
+  .screen-tab:hover{background:rgba(11,46,38,0.1)}
+  .screen-tab.active{
+    background:var(--emerald-1);color:#fff;border-color:var(--gold);
+    box-shadow:0 4px 12px rgba(11,46,38,0.2);
+  }
+
   /* ── SECTION SHARED ───────────────────────────────── */
   section{padding:120px 48px;position:relative}
-  .section-head{max-width:780px;margin:0 auto 80px;text-align:center}
+  .section-head{max-width:780px;margin:0 auto 80px;text-align:center;position:relative;z-index:2}
   .section-tag{
     display:inline-block;font-size:12px;font-weight:600;letter-spacing:2px;
     text-transform:uppercase;color:var(--gold-deep);margin-bottom:16px;
+    position:relative;padding:0 30px;
   }
+  .section-tag::before,.section-tag::after{
+    content:'';position:absolute;top:50%;width:20px;height:1px;background:var(--gold-deep);opacity:0.5;
+  }
+  .section-tag::before{left:0}
+  .section-tag::after{right:0}
   .section-title{
-    font-family:var(--display);font-size:clamp(36px,5vw,60px);
+    font-family:var(--display);font-size:clamp(36px,5vw,62px);
     font-weight:500;color:var(--emerald-1);line-height:1.05;
     letter-spacing:-1px;margin-bottom:18px;
   }
@@ -283,24 +519,31 @@
 
   /* ── TRUST STRIP ──────────────────────────────────── */
   .trust{
-    background:var(--emerald-1);color:rgba(255,255,255,0.7);
-    padding:36px 48px;display:flex;justify-content:center;align-items:center;
-    gap:60px;flex-wrap:wrap;
+    background:var(--emerald-1);color:rgba(255,255,255,0.78);
+    padding:36px 48px;
+    overflow:hidden;position:relative;
     border-top:1px solid rgba(214,178,94,0.15);
     border-bottom:1px solid rgba(214,178,94,0.15);
   }
-  .trust-item{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:500}
-  .trust-item svg{color:var(--gold);width:18px;height:18px}
+  .trust-marquee{
+    display:flex;gap:64px;
+    animation:marquee 35s linear infinite;
+    width:max-content;
+  }
+  .trust-item{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;white-space:nowrap}
+  .trust-item svg{color:var(--gold);width:18px;height:18px;flex-shrink:0}
 
-  /* ── FEATURES (interactive) ───────────────────────── */
-  .features{background:var(--cream)}
+  /* ── FEATURES (interactive carousel) ──────────────── */
+  .features{background:var(--cream);overflow:hidden}
   .feat-layout{
-    max-width:1200px;margin:0 auto;
+    max-width:1240px;margin:0 auto;
     display:grid;grid-template-columns:1fr 1.1fr;gap:80px;align-items:center;
   }
-  .feat-list{display:flex;flex-direction:column;gap:8px}
+  .feat-list{display:flex;flex-direction:column;gap:8px;max-height:600px;overflow-y:auto;padding-right:8px}
+  .feat-list::-webkit-scrollbar{width:4px}
+  .feat-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
   .feat-item{
-    padding:24px 26px;border-radius:18px;cursor:pointer;
+    padding:22px 24px;border-radius:18px;cursor:pointer;
     border:1px solid transparent;
     transition:all .35s cubic-bezier(.2,.9,.3,1);
     background:transparent;
@@ -318,10 +561,11 @@
     transition:transform .3s;
   }
   .feat-item.active .feat-icon{transform:rotate(-6deg) scale(1.05)}
+  .feat-content{flex:1;min-width:0}
   .feat-content h3{
-    font-family:var(--display);font-size:22px;font-weight:600;
+    font-family:var(--display);font-size:21px;font-weight:600;
     color:var(--emerald-1);margin-bottom:6px;letter-spacing:-0.3px;
-    display:flex;align-items:center;gap:10px;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
   }
   .feat-badge{
     font-size:9px;font-weight:700;letter-spacing:1px;
@@ -329,12 +573,13 @@
   }
   .feat-badge.paid{background:var(--gold);color:var(--emerald-1)}
   .feat-badge.free{background:rgba(11,46,38,0.08);color:var(--emerald-1)}
-  .feat-content p{font-size:14.5px;color:var(--muted);line-height:1.6;max-height:0;overflow:hidden;transition:max-height .4s ease, margin .3s}
-  .feat-item.active .feat-content p{max-height:120px;margin-top:4px}
+  .feat-badge.soon{background:rgba(214,178,94,0.2);color:var(--gold-deep);border:1px dashed var(--gold-deep)}
+  .feat-content p{font-size:14px;color:var(--muted);line-height:1.6;max-height:0;overflow:hidden;transition:max-height .4s ease, margin .3s}
+  .feat-item.active .feat-content p{max-height:140px;margin-top:4px}
 
   .feat-visual{
     position:sticky;top:120px;
-    height:560px;border-radius:32px;
+    height:580px;border-radius:32px;
     background:linear-gradient(160deg,var(--emerald-1),var(--emerald-3));
     padding:40px;display:grid;place-items:center;
     overflow:hidden;position:relative;
@@ -343,10 +588,16 @@
   .feat-visual::before{
     content:'';position:absolute;inset:0;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='%23D6B25E' stroke-width='0.5' opacity='0.08'><path d='M40 0L80 40L40 80L0 40Z'/><circle cx='40' cy='40' r='20'/><path d='M40 10L70 40L40 70L10 40Z'/></g></svg>");
+    animation:slowSpin 60s linear infinite;
+  }
+  .feat-visual::after{
+    content:'';position:absolute;top:-50%;right:-30%;
+    width:400px;height:400px;border-radius:50%;
+    background:radial-gradient(circle, rgba(214,178,94,0.15), transparent 70%);
   }
   .visual-panel{
     position:relative;z-index:2;width:100%;text-align:center;color:#fff;
-    transition:opacity .4s;
+    transition:opacity .4s, transform .4s;
   }
   .visual-icon{
     width:90px;height:90px;border-radius:24px;
@@ -354,12 +605,13 @@
     display:grid;place-items:center;margin:0 auto 28px;
     color:var(--gold);
     animation:floatIcon 4s ease-in-out infinite;
+    backdrop-filter:blur(10px);
   }
   .visual-panel h4{
     font-family:var(--display);font-size:36px;font-weight:500;
     margin-bottom:14px;letter-spacing:-0.5px;
   }
-  .visual-panel p{font-size:15px;color:rgba(255,255,255,0.75);max-width:340px;margin:0 auto 28px;line-height:1.6}
+  .visual-panel p{font-size:15px;color:rgba(255,255,255,0.78);max-width:360px;margin:0 auto 28px;line-height:1.65}
   .visual-meta{
     display:inline-flex;align-items:center;gap:8px;
     padding:8px 16px;border-radius:999px;
@@ -368,10 +620,7 @@
   }
 
   /* ── HONESTY / 3 MODES ────────────────────────────── */
-  .honesty{
-    background:var(--ivory);
-    text-align:center;
-  }
+  .honesty{background:var(--ivory);text-align:center}
   .modes{
     display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
     max-width:1100px;margin:0 auto;
@@ -382,6 +631,12 @@
     transition:transform .4s, box-shadow .4s;
     position:relative;overflow:hidden;
   }
+  .mode::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity:0;transition:opacity .3s;
+  }
+  .mode:hover::before{opacity:1}
   .mode:hover{transform:translateY(-6px);box-shadow:0 24px 50px rgba(11,46,38,0.08)}
   .mode-num{
     font-family:var(--display);font-size:80px;font-weight:300;
@@ -398,65 +653,182 @@
     padding:5px 10px;border-radius:6px;background:rgba(11,46,38,0.06);
   }
 
-  /* ── PRICING ──────────────────────────────────────── */
+  /* ── DAILY COMPANION (Quran/Prayer section) ──────── */
+  .daily{
+    background:linear-gradient(180deg,var(--ivory),var(--cream));
+    overflow:hidden;
+  }
+  .daily-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+    max-width:1200px;margin:0 auto;
+  }
+  .daily-card{
+    background:#fff;border-radius:22px;padding:32px 28px;
+    border:1px solid var(--border);
+    position:relative;overflow:hidden;
+    transition:transform .4s, box-shadow .4s;
+  }
+  .daily-card:hover{transform:translateY(-6px);box-shadow:0 30px 60px rgba(11,46,38,0.08)}
+  .daily-card.dark{
+    background:linear-gradient(160deg,var(--emerald-1),var(--emerald-3));
+    color:#fff;
+  }
+  .daily-card.dark::before{
+    content:'';position:absolute;inset:0;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><g fill='none' stroke='%23D6B25E' stroke-width='0.4' opacity='0.1'><path d='M30 0L60 30L30 60L0 30Z'/></g></svg>");
+  }
+  .daily-ic{
+    width:54px;height:54px;border-radius:14px;
+    background:linear-gradient(135deg,var(--emerald-1),var(--emerald-2));
+    display:grid;place-items:center;color:var(--gold);margin-bottom:22px;
+    transition:transform .3s;
+  }
+  .daily-card.dark .daily-ic{
+    background:rgba(214,178,94,0.15);border:1px solid rgba(214,178,94,0.3);
+  }
+  .daily-card:hover .daily-ic{transform:rotate(-8deg) scale(1.05)}
+  .daily-card h4{
+    font-family:var(--display);font-size:26px;font-weight:600;
+    color:var(--emerald-1);margin-bottom:8px;letter-spacing:-0.3px;
+    position:relative;z-index:2;
+  }
+  .daily-card.dark h4{color:#fff}
+  .daily-card p{font-size:14px;color:var(--muted);line-height:1.65;position:relative;z-index:2}
+  .daily-card.dark p{color:rgba(255,255,255,0.78)}
+  .daily-arabic{
+    font-family:var(--arabic);font-size:32px;color:var(--gold);
+    margin-top:18px;direction:rtl;text-align:right;
+    position:relative;z-index:2;line-height:1.4;
+  }
+
+  /* ── PARTNER PROGRAM ──────────────────────────────── */
+  .partners{
+    background:var(--emerald-deep);color:#fff;
+    position:relative;overflow:hidden;
+  }
+  .partners::before{
+    content:'';position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(214,178,94,0.1), transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(214,178,94,0.06), transparent 50%);
+  }
+  .partners::after{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><g fill='none' stroke='%23D6B25E' stroke-width='0.4' opacity='0.05'><path d='M50 0L100 50L50 100L0 50Z'/><circle cx='50' cy='50' r='25'/><path d='M50 15L85 50L50 85L15 50Z'/></g></svg>");
+  }
+  .partners .section-title{color:#fff}
+  .partners .section-tag{color:var(--gold)}
+  .partners .section-sub{color:rgba(255,255,255,0.72)}
+  .partners-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:30px;
+    max-width:1100px;margin:0 auto;position:relative;z-index:2;
+  }
+  .partner-card{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(214,178,94,0.2);
+    border-radius:24px;padding:48px 42px;
+    backdrop-filter:blur(10px);
+    transition:transform .4s, border-color .4s, background .4s;
+    position:relative;overflow:hidden;
+  }
+  .partner-card::before{
+    content:'';position:absolute;top:-50%;right:-30%;width:300px;height:300px;border-radius:50%;
+    background:radial-gradient(circle, rgba(214,178,94,0.08), transparent 70%);
+    transition:transform .6s;
+  }
+  .partner-card:hover{
+    transform:translateY(-6px);border-color:rgba(214,178,94,0.4);
+    background:rgba(255,255,255,0.06);
+  }
+  .partner-card:hover::before{transform:scale(1.3)}
+  .partner-ic{
+    width:64px;height:64px;border-radius:16px;
+    background:linear-gradient(135deg,var(--gold),var(--gold-deep));
+    display:grid;place-items:center;color:var(--emerald-1);margin-bottom:26px;
+    box-shadow:0 10px 24px rgba(214,178,94,0.25);
+    position:relative;z-index:2;
+  }
+  .partner-card h3{
+    font-family:var(--display);font-size:32px;font-weight:600;color:#fff;
+    margin-bottom:14px;letter-spacing:-0.5px;position:relative;z-index:2;
+  }
+  .partner-card p{
+    font-size:15px;color:rgba(255,255,255,0.78);line-height:1.65;
+    margin-bottom:24px;position:relative;z-index:2;
+  }
+  .partner-bullets{list-style:none;position:relative;z-index:2;margin-bottom:28px}
+  .partner-bullets li{
+    padding:6px 0;font-size:14px;color:rgba(255,255,255,0.85);
+    display:flex;align-items:flex-start;gap:10px;
+  }
+  .partner-bullets svg{color:var(--gold);flex-shrink:0;margin-top:4px;width:14px;height:14px}
+  .partner-cta{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(214,178,94,0.12);border:1px solid var(--gold);
+    color:var(--gold);padding:12px 24px;border-radius:12px;
+    font-weight:600;font-size:14px;text-decoration:none;
+    transition:background .25s, transform .25s;
+    position:relative;z-index:2;
+  }
+  .partner-cta:hover{background:var(--gold);color:var(--emerald-1);transform:translateY(-2px)}
+
+  /* ── PRICING (Coming Soon) ────────────────────────── */
   .pricing{
     background:linear-gradient(180deg,var(--cream),var(--ivory));
   }
-  .price-grid{
-    display:grid;grid-template-columns:1fr 1fr;gap:24px;
-    max-width:880px;margin:0 auto;
+  .price-wrap{
+    max-width:680px;margin:0 auto;text-align:center;position:relative;
   }
-  .price-card{
-    background:#fff;border-radius:24px;padding:44px 38px;
-    border:1px solid var(--border);position:relative;
-    transition:transform .3s;
+  .price-card-soon{
+    background:#fff;border-radius:28px;padding:60px 50px;
+    border:1px solid var(--border);
+    box-shadow:0 30px 60px rgba(11,46,38,0.08);
+    position:relative;overflow:hidden;
   }
-  .price-card:hover{transform:translateY(-4px)}
-  .price-card.featured{
-    background:linear-gradient(160deg,var(--emerald-1),var(--emerald-2));
-    color:#fff;border:none;
-    box-shadow:0 30px 60px rgba(11,46,38,0.25);
+  .price-card-soon::before{
+    content:'';position:absolute;inset:0;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='%230B2E26' stroke-width='0.4' opacity='0.03'><path d='M40 0L80 40L40 80L0 40Z'/></g></svg>");
   }
-  .price-card.featured::before{
-    content:'';position:absolute;inset:0;border-radius:24px;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><g fill='none' stroke='%23D6B25E' stroke-width='0.4' opacity='0.1'><path d='M30 0L60 30L30 60L0 30Z'/></g></svg>");
-    pointer-events:none;
-  }
-  .price-tier{
+  .price-stamp{
+    display:inline-block;padding:8px 18px;border-radius:999px;
+    background:var(--gold-pale);color:#7B5800;
     font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-    color:var(--gold-deep);margin-bottom:10px;
+    margin-bottom:24px;position:relative;z-index:2;
+    border:1px dashed var(--gold-deep);
   }
-  .price-card.featured .price-tier{color:var(--gold)}
-  .price-name{
-    font-family:var(--display);font-size:36px;font-weight:500;
-    color:var(--emerald-1);margin-bottom:6px;
+  .price-card-soon h3{
+    font-family:var(--display);font-size:44px;font-weight:500;color:var(--emerald-1);
+    margin-bottom:16px;letter-spacing:-0.8px;position:relative;z-index:2;
   }
-  .price-card.featured .price-name{color:#fff}
-  .price-tag{display:flex;align-items:baseline;gap:6px;margin:18px 0 26px}
-  .price-amount{font-family:var(--display);font-size:54px;font-weight:500;color:var(--emerald-1);line-height:1}
-  .price-card.featured .price-amount{color:var(--gold)}
-  .price-period{color:var(--muted);font-size:14px}
-  .price-card.featured .price-period{color:rgba(255,255,255,0.7)}
-  .price-list{list-style:none;margin-bottom:30px;position:relative;z-index:2}
-  .price-list li{
-    padding:10px 0;font-size:14px;color:var(--ink);
-    display:flex;align-items:flex-start;gap:10px;
-    border-bottom:1px solid var(--border);
+  .price-card-soon h3 em{font-style:italic;color:var(--gold-deep);font-weight:400}
+  .price-card-soon p{
+    font-size:16px;color:var(--muted);line-height:1.7;
+    max-width:480px;margin:0 auto 32px;position:relative;z-index:2;
   }
-  .price-card.featured .price-list li{color:rgba(255,255,255,0.92);border-color:rgba(255,255,255,0.1)}
-  .price-list li:last-child{border-bottom:none}
-  .price-list svg{flex-shrink:0;color:var(--gold-deep);margin-top:2px;width:16px;height:16px}
-  .price-card.featured .price-list svg{color:var(--gold)}
-  .price-cta{
-    width:100%;padding:14px;border-radius:12px;font-weight:600;font-size:14px;
-    border:none;cursor:pointer;font-family:var(--body);
-    transition:transform .2s;
+  .notify-form{
+    display:flex;gap:8px;max-width:440px;margin:0 auto;
+    position:relative;z-index:2;
   }
-  .price-cta.fill{background:linear-gradient(135deg,var(--emerald-1),var(--emerald-2));color:#fff}
-  .price-cta.gold{background:var(--gold);color:var(--emerald-1)}
-  .price-cta:hover{transform:translateY(-2px)}
+  .notify-form input{
+    flex:1;padding:14px 18px;border-radius:12px;border:1.5px solid var(--border);
+    font-size:14px;font-family:var(--body);background:var(--cream);
+    transition:border-color .2s;
+  }
+  .notify-form input:focus{outline:none;border-color:var(--emerald-1)}
+  .notify-form button{
+    background:linear-gradient(135deg,var(--emerald-1),var(--emerald-2));
+    color:#fff;border:none;padding:14px 24px;border-radius:12px;
+    font-weight:600;font-size:14px;cursor:pointer;font-family:var(--body);
+    transition:transform .2s, box-shadow .2s;
+  }
+  .notify-form button:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(11,46,38,0.25)}
+  .price-hint{
+    margin-top:20px;font-size:12px;color:var(--muted);position:relative;z-index:2;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .price-hint svg{color:var(--gold-deep);width:14px;height:14px}
 
-  /* ── CTA / FOOTER ─────────────────────────────────── */
+  /* ── FINAL CTA / FOOTER ───────────────────────────── */
   .final-cta{
     background:var(--emerald-1);color:#fff;text-align:center;
     padding:120px 48px;position:relative;overflow:hidden;
@@ -464,21 +836,22 @@
   .final-cta::before{
     content:'';position:absolute;inset:0;
     background:
-      radial-gradient(ellipse at 30% 50%, rgba(214,178,94,0.15), transparent 50%),
-      radial-gradient(ellipse at 70% 50%, rgba(214,178,94,0.08), transparent 50%);
+      radial-gradient(ellipse at 30% 50%, rgba(214,178,94,0.18), transparent 50%),
+      radial-gradient(ellipse at 70% 50%, rgba(214,178,94,0.1), transparent 50%);
   }
   .final-cta::after{
     content:'';position:absolute;inset:0;pointer-events:none;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'><g fill='none' stroke='%23D6B25E' stroke-width='0.4' opacity='0.06'><path d='M40 0L80 40L40 80L0 40Z'/><circle cx='40' cy='40' r='20'/></g></svg>");
+    animation:slowSpin 90s linear infinite reverse;
   }
   .final-cta-inner{position:relative;z-index:2;max-width:760px;margin:0 auto}
   .final-cta h2{
-    font-family:var(--display);font-size:clamp(40px,5vw,68px);
+    font-family:var(--display);font-size:clamp(40px,5vw,70px);
     font-weight:500;line-height:1.05;margin-bottom:20px;
     letter-spacing:-1px;
   }
   .final-cta h2 em{font-style:italic;color:var(--gold);font-weight:400}
-  .final-cta p{font-size:18px;color:rgba(255,255,255,0.75);margin-bottom:40px;max-width:520px;margin-left:auto;margin-right:auto}
+  .final-cta p{font-size:18px;color:rgba(255,255,255,0.78);margin-bottom:40px;max-width:540px;margin-left:auto;margin-right:auto}
   .final-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
   .btn-gold{
     background:var(--gold);color:var(--emerald-1);
@@ -499,14 +872,14 @@
 
   footer{
     background:#082019;color:rgba(255,255,255,0.55);
-    padding:50px 48px 30px;
+    padding:60px 48px 30px;
     border-top:1px solid rgba(214,178,94,0.1);
   }
   .foot-grid{
     max-width:1200px;margin:0 auto 40px;
     display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;
   }
-  .foot-brand .logo{color:#fff;margin-bottom:14px}
+  .foot-brand .logo{color:#fff;margin-bottom:18px}
   .foot-brand p{font-size:14px;line-height:1.6;max-width:280px}
   .foot-col h5{font-family:var(--display);color:var(--gold);font-size:14px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px}
   .foot-col a{display:block;color:rgba(255,255,255,0.6);text-decoration:none;font-size:13.5px;padding:6px 0;transition:color .2s}
@@ -520,61 +893,82 @@
   .foot-arabic{font-family:var(--arabic);color:var(--gold);font-size:16px}
 
   /* ── ANIMATIONS ─────────────────────────────────── */
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(1.4)}}
+  @keyframes pulse2{0%,100%{transform:scale(0.9);opacity:0.6}50%{transform:scale(1.1);opacity:1}}
   @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
   @keyframes floatPhone{0%,100%{transform:rotateY(-8deg) rotateX(5deg) translateY(0)}50%{transform:rotateY(-8deg) rotateX(5deg) translateY(-12px)}}
   @keyframes floatGlow{0%,100%{transform:scale(1);opacity:0.7}50%{transform:scale(1.1);opacity:1}}
-  @keyframes floatIcon{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  @keyframes floatIcon{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  @keyframes floatToken{0%,100%{transform:translateY(0) rotate(0deg);opacity:0.18}50%{transform:translateY(-20px) rotate(5deg);opacity:0.3}}
+  @keyframes slowSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  @keyframes sosPulse{0%{transform:scale(0.9);opacity:0.8}100%{transform:scale(1.8);opacity:0}}
+  @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
   .reveal{opacity:0;transform:translateY(30px);transition:opacity .8s ease, transform .8s ease}
   .reveal.in{opacity:1;transform:none}
+  .reveal-stagger > *{opacity:0;transform:translateY(20px);transition:opacity .7s ease, transform .7s ease}
+  .reveal-stagger.in > *{opacity:1;transform:none}
+  .reveal-stagger.in > *:nth-child(1){transition-delay:.05s}
+  .reveal-stagger.in > *:nth-child(2){transition-delay:.18s}
+  .reveal-stagger.in > *:nth-child(3){transition-delay:.31s}
+  .reveal-stagger.in > *:nth-child(4){transition-delay:.44s}
 
   /* ── RESPONSIVE ─────────────────────────────────── */
   @media (max-width:980px){
     nav{padding:14px 20px}
-    .nav-links{display:none}
-    .nav-links.cta-only{display:flex;gap:10px}
-    .nav-links.cta-only a:not(.nav-cta){display:none}
+    .nav-links a:not(.nav-cta){display:none}
     .hero{grid-template-columns:1fr;padding:120px 20px 60px;text-align:center;gap:40px}
-    .hero-stats{justify-content:center;margin:0 auto}
+    .hero-stats{justify-content:center;margin:0 auto;flex-wrap:wrap;gap:24px}
     .hero-ctas{justify-content:center}
-    .phone-stage{min-height:560px}
+    .phone-stage{min-height:680px}
     section{padding:80px 20px}
     .feat-layout{grid-template-columns:1fr;gap:40px}
-    .feat-visual{position:static;height:380px;padding:30px}
+    .feat-list{max-height:none}
+    .feat-visual{position:static;height:420px;padding:30px}
     .visual-panel h4{font-size:28px}
-    .modes{grid-template-columns:1fr;gap:18px}
-    .price-grid{grid-template-columns:1fr}
+    .modes,.daily-grid,.partners-grid{grid-template-columns:1fr;gap:18px}
     .foot-grid{grid-template-columns:1fr 1fr;gap:30px}
     .foot-bottom{flex-direction:column;gap:14px;text-align:center}
-    .trust{gap:24px;padding:24px 20px}
+    .trust-marquee{gap:32px;animation-duration:25s}
     .trust-item{font-size:12px}
     .final-cta{padding:80px 20px}
+    .price-card-soon{padding:44px 28px}
+    .notify-form{flex-direction:column}
+    .cursor-glow{display:none}
   }
   @media (max-width:560px){
-    .hero h1{font-size:42px}
-    .section-title{font-size:34px}
-    .price-card{padding:32px 24px}
+    .hero h1{font-size:44px}
+    .section-title{font-size:36px}
+    .partner-card{padding:36px 28px}
     .foot-grid{grid-template-columns:1fr}
+    .screen-tabs{gap:6px}
+    .screen-tab{padding:7px 11px;font-size:10.5px}
   }
 </style>
 </head>
 <body>
+<div class="cursor-glow" id="cursorGlow"></div>
 
 <!-- ═══ NAVIGATION ═══ -->
 <nav id="nav">
   <a href="#" class="logo">
     <span class="logo-mark">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#D6B25E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 2 L4 8 L4 18 L12 22 L20 18 L20 8 Z"/>
-        <circle cx="12" cy="12" r="3" fill="#D6B25E" stroke="none"/>
+      <svg viewBox="0 0 24 24" fill="none" stroke="#D6B25E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2 C8 4, 6 7, 6 12 L6 18 C6 20, 8 22, 12 22 C16 22, 18 20, 18 18 L18 12 C18 7, 16 4, 12 2 Z"/>
+        <path d="M9 12 L15 12"/>
+        <circle cx="12" cy="6" r="1" fill="#D6B25E"/>
+        <path d="M10 14 Q12 17, 14 14" stroke-width="1.2"/>
       </svg>
     </span>
-    Wasl
+    <span class="logo-text-wrap">
+      Wasl
+      <span class="logo-arabic">وصل</span>
+    </span>
   </a>
   <div class="nav-links">
     <a href="#features">Features</a>
     <a href="#honesty">How it works</a>
+    <a href="#partners">For Partners</a>
     <a href="#pricing">Pricing</a>
     <a href="#download" class="nav-cta">Get the app</a>
   </div>
@@ -583,15 +977,15 @@
 <!-- ═══ HERO ═══ -->
 <section class="hero">
   <div class="hero-content">
-    <span class="eyebrow"><span class="dot"></span>For pilgrims, by pilgrims</span>
+    <span class="eyebrow"><span class="dot"></span>Now in Internal Testing</span>
     <h1>Your Umrah,<br/><em>connected.</em><span class="arabic">وصل</span></h1>
-    <p class="hero-sub">Stay together inside the Haram, split bills across currencies, reunite lost pilgrims, and journey with serenity — Wasl is the honest companion for groups going for Umrah and Hajj.</p>
+    <p class="hero-sub">Stay together in the Haram. Split bills across currencies. Read Quran daily. Reunite lost pilgrims in minutes. Wasl is the honest, all-in-one companion built for Umrah and Hajj groups — and for the daily life of every Muslim.</p>
     <div class="hero-ctas">
       <a href="#download" class="btn-primary">
-        Download for free
+        Join the beta
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
-      <a href="#features" class="btn-secondary">Explore features</a>
+      <a href="#features" class="btn-secondary">See what's inside</a>
     </div>
     <div class="hero-stats">
       <div>
@@ -603,13 +997,18 @@
         <div class="stat-label">Languages</div>
       </div>
       <div>
-        <div class="stat-num">$9.99</div>
-        <div class="stat-label">Per trip</div>
+        <div class="stat-num">114</div>
+        <div class="stat-label">Surahs offline</div>
       </div>
     </div>
   </div>
 
   <div class="phone-stage">
+    <span class="float-token">ﷲ</span>
+    <span class="float-token">سلام</span>
+    <span class="float-token">حج</span>
+    <span class="float-token">عمرة</span>
+
     <div class="phone-glow"></div>
     <div class="phone">
       <div class="phone-screen">
@@ -618,7 +1017,9 @@
           <span>9:41</span>
           <span>•••  ▾  ▮</span>
         </div>
-        <div class="screen-content">
+
+        <!-- SCREEN 1: HOME -->
+        <div class="screen home active" data-screen="home">
           <div class="ph-greeting">ASSALAMU ALAIKUM</div>
           <div class="ph-name">Omar</div>
           <div class="ph-prayer-card">
@@ -633,18 +1034,18 @@
             <div class="ph-card-title">No active group</div>
             <div class="ph-card-sub">Create or join a group to stay coordinated.</div>
             <div class="ph-btn-row">
-              <div class="ph-btn-fill">Create (Paid)</div>
+              <div class="ph-btn-fill">Create</div>
               <div class="ph-btn-out">Join</div>
             </div>
           </div>
           <div class="ph-tiles">
             <div class="ph-tile">
-              <div class="ph-tile-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></div>
+              <div class="ph-tile-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
               <div><div class="ph-tile-name">Crowd</div><div class="ph-tile-meta">Busy at Mataf</div></div>
             </div>
             <div class="ph-tile">
               <div class="ph-tile-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-              <div><div class="ph-tile-name">Bills</div><div class="ph-tile-meta">Manual entry</div></div>
+              <div><div class="ph-tile-name">Bills</div><div class="ph-tile-meta">2 to settle</div></div>
             </div>
             <div class="ph-tile">
               <div class="ph-tile-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg></div>
@@ -652,30 +1053,177 @@
             </div>
             <div class="ph-tile">
               <div class="ph-lock"><svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-              <div class="ph-tile-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+              <div class="ph-tile-ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/></svg></div>
               <div><div class="ph-tile-name">Meet</div><div class="ph-tile-meta">Paid</div></div>
             </div>
           </div>
         </div>
+
+        <!-- SCREEN 2: MAP -->
+        <div class="screen map" data-screen="map">
+          <div class="map-bg">
+            <svg viewBox="0 0 300 620" preserveAspectRatio="xMidYMid slice">
+              <!-- streets -->
+              <path d="M0 280 Q80 270 150 280 Q220 290 300 280" stroke="#fff" stroke-width="12" fill="none" opacity="0.85"/>
+              <path d="M150 0 Q155 140 150 280 Q145 420 150 620" stroke="#fff" stroke-width="12" fill="none" opacity="0.85"/>
+              <path d="M0 400 Q100 388 200 400 Q260 408 300 395" stroke="#fff" stroke-width="8" fill="none" opacity="0.7"/>
+              <path d="M80 0 Q85 140 80 280 Q75 420 80 620" stroke="#fff" stroke-width="8" fill="none" opacity="0.7"/>
+              <path d="M220 0 Q218 140 220 280 Q222 420 220 620" stroke="#fff" stroke-width="8" fill="none" opacity="0.7"/>
+              <!-- Masjid al-Haram circle -->
+              <ellipse cx="150" cy="280" rx="80" ry="62" fill="#DDD4C4"/>
+              <ellipse cx="150" cy="280" rx="62" ry="46" fill="#D8CFBF" stroke="#B8AC98" stroke-width="1"/>
+              <!-- Kaaba -->
+              <rect x="142" y="272" width="16" height="16" rx="1.5" fill="#1A1A1A"/>
+              <rect x="142" y="278" width="16" height="2" fill="#D6B25E"/>
+              <!-- green zones -->
+              <ellipse cx="60" cy="280" rx="22" ry="18" fill="#C8D8B8" opacity="0.6"/>
+              <ellipse cx="240" cy="280" rx="22" ry="18" fill="#C8D8B8" opacity="0.6"/>
+            </svg>
+          </div>
+
+          <!-- zone wedge for Aisha (indoor) -->
+          <div class="zone-wedge" style="top:230px;left:40px"></div>
+
+          <div class="map-overlay">
+            <div class="map-top">
+              <div>
+                <div class="map-top-name">YOUR GROUP</div>
+                <div class="map-top-meta">5 members · 3 online</div>
+              </div>
+              <div class="map-top-live">● LIVE</div>
+            </div>
+
+            <!-- pins -->
+            <div class="map-pin you" style="top:170px;left:130px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <div class="map-pin-label" style="top:148px;left:165px;">Omar (You)</div>
+
+            <div class="map-pin" style="top:240px;left:50px;">A</div>
+            <div class="map-pin-label" style="top:218px;left:84px;">Aisha · Zone</div>
+
+            <div class="map-pin away" style="top:380px;left:200px;">Y</div>
+            <div class="map-pin-label" style="top:358px;left:160px;background:#FFE5E5;color:#B71C1C">Yusuf · 1.2km</div>
+
+            <div class="map-pin" style="top:330px;left:120px;">Ab</div>
+          </div>
+
+          <div class="map-bottom-card">
+            <div class="map-bottom-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div style="flex:1">
+              <div style="font-size:10px;font-weight:700">Aisha is in Zone</div>
+              <div style="font-size:8px;color:var(--muted);margin-top:2px">Mataf North · last seen 28s ago</div>
+            </div>
+            <div style="font-size:14px;color:var(--emerald-1)">›</div>
+          </div>
+        </div>
+
+        <!-- SCREEN 3: QURAN -->
+        <div class="screen quran" data-screen="quran">
+          <div class="quran-top">
+            <div class="quran-back">‹ Surahs</div>
+            <div class="quran-surah-name">Al-Fatihah</div>
+            <div class="quran-surah-meta">The Opening · 7 verses · Makki</div>
+          </div>
+          <div class="quran-ayah">
+            <div class="ayah-num">١</div>
+            <div class="ayah-arabic"><span class="gold">بِسْمِ</span> <span class="red">ٱللَّهِ</span> <span class="gold">ٱلرَّحْمَٰنِ</span> <span class="red">ٱلرَّحِيمِ</span></div>
+            <div class="ayah-trans">In the name of Allah, the Most Gracious, the Most Merciful.</div>
+          </div>
+          <div class="quran-ayah">
+            <div class="ayah-num">٢</div>
+            <div class="ayah-arabic"><span class="gold">ٱلْحَمْدُ</span> لِلَّهِ <span class="red">رَبِّ</span> ٱلْعَٰلَمِينَ</div>
+            <div class="ayah-trans">All praise is for Allah — Lord of all worlds.</div>
+          </div>
+          <div class="quran-player">
+            <div class="play-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </div>
+            <div style="flex:1">
+              <div style="font-size:9px;color:rgba(255,255,255,0.7);margin-bottom:4px">Mishary Al-Afasy</div>
+              <div class="play-bar"></div>
+            </div>
+            <div class="play-time">1:24</div>
+          </div>
+        </div>
+
+        <!-- SCREEN 4: BILLS -->
+        <div class="screen bills" data-screen="bills">
+          <div class="bills-head">
+            <div class="bills-back">‹ Group bills</div>
+            <div class="bills-title">Split this bill</div>
+          </div>
+          <div class="ocr-banner">
+            <div class="ic"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 8l4-4h10l4 4M3 8h18v12H3z"/><circle cx="12" cy="14" r="3"/></svg></div>
+            <div>Scanned by Gemini · Arabic + English detected</div>
+          </div>
+          <div class="bills-receipt">
+            <div class="receipt-merchant">Albaik · Aziziah</div>
+            <div class="receipt-meta">14:32 · 17 May 2026</div>
+            <div class="receipt-line"><span class="name">Broasted Chicken (4pc)</span><span class="assigned">All</span><span>SAR 32</span></div>
+            <div class="receipt-line"><span class="name">Hot Wings Plate</span><span class="assigned">Aisha</span><span>SAR 22</span></div>
+            <div class="receipt-line"><span class="name">Garlic Sauce x2</span><span class="assigned">Yusuf</span><span>SAR 8</span></div>
+            <div class="receipt-line"><span class="name">Pepsi 600ml x3</span><span class="assigned">All</span><span>SAR 18</span></div>
+            <div class="receipt-line"><span>TOTAL · rate locked</span><span>SAR 80 · MYR 92.40</span></div>
+          </div>
+          <div class="split-pills">
+            <div class="split-pill"><span class="av">O</span> Omar · 26.50</div>
+            <div class="split-pill"><span class="av" style="background:#E65100">A</span> Aisha · 38.50</div>
+            <div class="split-pill"><span class="av" style="background:#1565C0">Y</span> Yusuf · 27.40</div>
+          </div>
+        </div>
+
+        <!-- SCREEN 5: SOS -->
+        <div class="screen sos" data-screen="sos">
+          <div class="sos-ring">
+            <div class="sos-core">SOS</div>
+          </div>
+          <div class="sos-title">Broadcasting</div>
+          <div class="sos-sub">Your group has been alerted with your last zone, hotel, and meeting point. Stay where you are.</div>
+          <div class="sos-meta">
+            <span>📍 Mataf North</span>
+            <span>🔋 4%</span>
+            <span>00:08</span>
+          </div>
+        </div>
       </div>
+    </div>
+
+    <div class="screen-tabs">
+      <button class="screen-tab active" data-target="home">Home</button>
+      <button class="screen-tab" data-target="map">Live Map</button>
+      <button class="screen-tab" data-target="quran">Quran</button>
+      <button class="screen-tab" data-target="bills">Smart Bills</button>
+      <button class="screen-tab" data-target="sos">SOS</button>
     </div>
   </div>
 </section>
 
-<!-- ═══ TRUST STRIP ═══ -->
+<!-- ═══ TRUST STRIP (marquee) ═══ -->
 <div class="trust">
-  <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>Honest about GPS limits</div>
-  <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Privacy-first, on-device</div>
-  <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>Built in Malaysia · Made for the Ummah</div>
-  <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>Designed with imams & guides</div>
+  <div class="trust-marquee">
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>Honest about GPS limits inside the Haram</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Privacy-first · Firebase App Check</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>Built in Malaysia · For the Ummah</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>Reviewed by imams &amp; group guides</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Offline Quran &amp; rituals</div>
+    <!-- duplicate for seamless loop -->
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>Honest about GPS limits inside the Haram</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Privacy-first · Firebase App Check</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>Built in Malaysia · For the Ummah</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>Reviewed by imams &amp; group guides</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Offline Quran &amp; rituals</div>
+  </div>
 </div>
 
-<!-- ═══ FEATURES (interactive) ═══ -->
+<!-- ═══ FEATURES (interactive carousel) ═══ -->
 <section id="features" class="features">
   <div class="section-head reveal">
     <span class="section-tag">What it does</span>
-    <h2 class="section-title">Everything your group needs, <em>nothing it doesn't.</em></h2>
-    <p class="section-sub">From the moment you land to the moment you return home — Wasl handles the chaos so you can focus on your worship.</p>
+    <h2 class="section-title">A companion for the journey — <em>and the days after.</em></h2>
+    <p class="section-sub">From the moment your group lands to the daily prayer years later. Click any feature to explore it.</p>
   </div>
 
   <div class="feat-layout">
@@ -685,18 +1233,18 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         </div>
         <div class="feat-content">
-          <h3>Group tracking <span class="feat-badge free">Free</span></h3>
-          <p>Three honest modes: Pinpoint outdoors, Zone inside the Haram, Last Seen when signals drop. No false confidence — real coordination.</p>
+          <h3>Live group map <span class="feat-badge free">Free</span></h3>
+          <p>Mapbox-powered "Emerald Cockpit" map with real-time member positions, proximity zones, meeting points and offline pins. Built on Firebase Realtime Database for instant updates.</p>
         </div>
       </div>
 
       <div class="feat-item" data-feat="1">
         <div class="feat-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
         </div>
         <div class="feat-content">
-          <h3>Smart bill split <span class="feat-badge paid">Paid</span></h3>
-          <p>OCR scans your receipt, splits per item, and locks the currency rate at the moment of purchase. Settle later in any currency without surprises.</p>
+          <h3>Quran reader, daily <span class="feat-badge free">Free</span></h3>
+          <p>All 114 surahs offline, tajweed colouring, audio recitation by world-class qaris, bookmarks, last-read tracking, and shareable ayah cards. Build a reading streak that lasts beyond your trip.</p>
         </div>
       </div>
 
@@ -705,38 +1253,78 @@
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
         </div>
         <div class="feat-content">
-          <h3>Lost Pilgrim Helper <span class="feat-badge paid">Paid</span></h3>
-          <p>Find an elderly pilgrim with no phone? Wasl translates instantly into their language, finds their group across the city, and reunites them in minutes.</p>
+          <h3>Prayer times &amp; adhan <span class="feat-badge free">Free</span></h3>
+          <p>Exact-alarm prayer scheduling, multiple calculation methods, Hanafi Asr support, adhan sounds. Notifications fire even when your phone is asleep.</p>
         </div>
       </div>
 
       <div class="feat-item" data-feat="3">
         <div class="feat-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
         </div>
         <div class="feat-content">
-          <h3>Crowd awareness <span class="feat-badge free">Free</span></h3>
-          <p>Live density signals across the Mataf, Sa'i, and prayer halls. Know when to go, when to wait, and which gate is least crowded right now.</p>
+          <h3>Smart bill split <span class="feat-badge paid">Paid</span></h3>
+          <p>Snap a receipt — Gemini Vision OCR reads it (tuned for Arabic and bilingual Gulf receipts), Tabscanner and ML Kit handle fallback &amp; offline. Equal or per-item split, payment tracking, cent-accurate UID-keyed maths.</p>
         </div>
       </div>
 
       <div class="feat-item" data-feat="4">
         <div class="feat-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         </div>
         <div class="feat-content">
-          <h3>Umrah Guide & Du'as <span class="feat-badge free">Free</span></h3>
-          <p>Step-by-step rituals — Tawaf, Sa'i, Halq, Ihram — with authenticated du'as in Arabic, transliteration, and your language. Always offline.</p>
+          <h3>Group chat &amp; calls <span class="feat-badge paid">Paid</span></h3>
+          <p>Text, images, voice notes, emoji, typing indicators — and admin tools for join requests, approvals and polite group-switch flows. Free members can read; Paid members can speak.</p>
         </div>
       </div>
 
       <div class="feat-item" data-feat="5">
         <div class="feat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/><path d="M12 22v-2"/></svg>
+        </div>
+        <div class="feat-content">
+          <h3>Help a Lost Pilgrim <span class="feat-badge paid">Paid</span></h3>
+          <p>Found someone lost with no phone? Enter their group code and see their group live on a map. Translation in 15+ languages — reunite a stranger with their family in minutes. Wasl's signature feature.</p>
+        </div>
+      </div>
+
+      <div class="feat-item" data-feat="6">
+        <div class="feat-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         </div>
         <div class="feat-content">
-          <h3>Low-battery SOS <span class="feat-badge paid">Paid</span></h3>
-          <p>When your phone hits 5%, Wasl pings your group with your last known zone, your hotel, and your meeting points — automatically.</p>
+          <h3>SOS &amp; low-battery alerts <span class="feat-badge paid">Paid</span></h3>
+          <p>Data-only FCM with full-screen lock-screen alerts. At 5% battery Wasl automatically broadcasts your zone, hotel, and meeting points. Three-layer background tracking keeps you findable overnight.</p>
+        </div>
+      </div>
+
+      <div class="feat-item" data-feat="7">
+        <div class="feat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+        </div>
+        <div class="feat-content">
+          <h3>99 Names &amp; Quran Stories <span class="feat-badge free">Free</span></h3>
+          <p>Daily reflections on Allah's names with audio, plus bite-sized Quran Stories. Tuesday and Friday nudges keep you engaged year-round — not just during your trip.</p>
+        </div>
+      </div>
+
+      <div class="feat-item" data-feat="8">
+        <div class="feat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div class="feat-content">
+          <h3>Hotel pin &amp; search <span class="feat-badge paid">Paid</span></h3>
+          <p>Mapbox geocoding finds and pins your accommodation. Share it with your group, return to it from anywhere in the city. Especially helpful when your phone keyboard is in a different language.</p>
+        </div>
+      </div>
+
+      <div class="feat-item" data-feat="9">
+        <div class="feat-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+        </div>
+        <div class="feat-content">
+          <h3>Helper-tracking protection <span class="feat-badge soon">Coming soon</span></h3>
+          <p>When someone uses Lost Pilgrim Helper to locate you, your group gets notified with a blinker dot and a one-tap block. Privacy by design, rolling out after the current Hajj test window.</p>
         </div>
       </div>
     </div>
@@ -746,8 +1334,8 @@
         <div class="visual-icon" id="visualIcon">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
         </div>
-        <h4 id="visualTitle">Pinpoint, Zone, Last Seen</h4>
-        <p id="visualDesc">Other apps lie about indoor GPS. We don't. Wasl uses pre-mapped zones inside the Haram so you always know roughly where your group is — even in the densest crowds.</p>
+        <h4 id="visualTitle">Emerald Cockpit map</h4>
+        <p id="visualDesc">Real-time member positions on a beautifully styled Mapbox base. Proximity zones, meeting points, offline pins. Powered by Firebase RTDB so locations update instantly across every device in the group.</p>
         <span class="visual-meta" id="visualMeta">FREE FOR EVERYONE</span>
       </div>
     </div>
@@ -759,74 +1347,137 @@
   <div class="section-head reveal">
     <span class="section-tag">The Wasl difference</span>
     <h2 class="section-title">We won't pretend GPS works <em>where it doesn't.</em></h2>
-    <p class="section-sub">Inside the Haram, satellite signals bounce off marble and steel. Most apps fake it. We designed three modes that adapt to reality.</p>
+    <p class="section-sub">Inside the Haram, satellite signals bounce off marble and steel. Most apps fake it. Wasl was designed to adapt — three honest modes, automatically chosen by signal quality.</p>
   </div>
 
-  <div class="modes">
-    <div class="mode reveal">
+  <div class="modes reveal-stagger">
+    <div class="mode">
       <div class="mode-num">i.</div>
       <h4>Pinpoint</h4>
-      <p>Outside the Haram, full GPS precision. See your group's exact position on a real map — gates, plazas, hotels, transit.</p>
+      <p>Outside the Haram, full GPS precision via Mapbox. See your group's exact position on a real map — gates, plazas, hotels, transit.</p>
       <span class="mode-tag">Outdoor accuracy</span>
     </div>
-    <div class="mode reveal">
+    <div class="mode">
       <div class="mode-num">ii.</div>
       <h4>Zone</h4>
-      <p>Inside the Haram, fuzzy polygons highlight which area your group is in — Mataf North, Sa'i Middle, Clock Tower lobby.</p>
+      <p>Inside the Haram, fuzzy polygons highlight which area your group is in — Mataf North, Sa'i Middle, Clock Tower lobby. A zone wedge keeps you oriented.</p>
       <span class="mode-tag">Indoor honesty</span>
     </div>
-    <div class="mode reveal">
+    <div class="mode">
       <div class="mode-num">iii.</div>
       <h4>Last Seen</h4>
-      <p>Signal lost? Wasl shows the last verified location and time. Set a meeting point in advance — never panic again.</p>
+      <p>Signal lost? Wasl shows the last verified location and time. Set meeting points in advance — and the auto-SOS handles the rest.</p>
       <span class="mode-tag">Failsafe</span>
     </div>
   </div>
 </section>
 
-<!-- ═══ PRICING ═══ -->
+<!-- ═══ DAILY COMPANION ═══ -->
+<section class="daily">
+  <div class="section-head reveal">
+    <span class="section-tag">Beyond the journey</span>
+    <h2 class="section-title">Built for daily life, <em>not just seven days.</em></h2>
+    <p class="section-sub">Wasl is the companion that stays with you long after Umrah — through prayer, Quran, and connection with your group.</p>
+  </div>
+
+  <div class="daily-grid reveal-stagger">
+    <div class="daily-card">
+      <div class="daily-ic">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      </div>
+      <h4>Full Quran, offline</h4>
+      <p>114 surahs with tajweed colouring, world-class recitations, bookmarks, last-read tracking and beautiful ayah cards you can share.</p>
+      <div class="daily-arabic">اقْرَأْ</div>
+    </div>
+
+    <div class="daily-card dark">
+      <div class="daily-ic">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      </div>
+      <h4>Prayer that respects sleep</h4>
+      <p>Exact-alarm scheduling, multiple madhhabs, adhan sounds and silent modes. Prayers fire on time, even when your phone is asleep or in flight mode.</p>
+      <div class="daily-arabic">صَلَاة</div>
+    </div>
+
+    <div class="daily-card">
+      <div class="daily-ic">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>
+      </div>
+      <h4>99 Names &amp; Stories</h4>
+      <p>Daily reflections on Asma ul-Husna with audio, plus short, beautiful Quran Stories — gentle nudges to keep your iman alive year-round.</p>
+      <div class="daily-arabic">ذِكْر</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PARTNER PROGRAM ═══ -->
+<section id="partners" class="partners">
+  <div class="section-head reveal">
+    <span class="section-tag">For Hajj &amp; Umrah partners</span>
+    <h2 class="section-title">Give your pilgrims <em>more than a package.</em></h2>
+    <p class="section-sub">We're rolling out partner access for travel agencies and hotels in Saudi Arabia. Bundle Wasl Pro with your trips or rooms — at no cost to your guests.</p>
+  </div>
+
+  <div class="partners-grid">
+    <div class="partner-card reveal">
+      <div class="partner-ic">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      </div>
+      <h3>Travel agencies</h3>
+      <p>Add Wasl Pro to your Umrah and Hajj packages. Your pilgrims arrive with full access — group tracking, smart bills, Lost Pilgrim Helper, daily Quran. Your brand, our backbone.</p>
+      <ul class="partner-bullets">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Free Pro for every pilgrim in your group</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Bulk activation codes, no app store friction</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Operator dashboard for live group visibility</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Co-branding on welcome screens (optional)</li>
+      </ul>
+      <a href="mailto:partners@wasl.app?subject=Travel%20agency%20partnership" class="partner-cta">
+        Become an agency partner
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+
+    <div class="partner-card reveal">
+      <div class="partner-ic">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/><path d="M9 9v.01M9 13v.01M9 17v.01"/></svg>
+      </div>
+      <h3>Hotels in Saudi Arabia</h3>
+      <p>Include Wasl Pro with every room package. Welcome each guest with a check-in QR — they unlock the full app for the length of their stay. A premium amenity that costs you nothing per room.</p>
+      <ul class="partner-bullets">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Free Pro for the duration of every stay</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>QR code at check-in — one tap to activate</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Pre-pinned hotel location in every guest's app</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Premium guest amenity, zero per-room cost</li>
+      </ul>
+      <a href="mailto:partners@wasl.app?subject=Hotel%20partnership" class="partner-cta">
+        Become a hotel partner
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRICING (Coming Soon) ═══ -->
 <section id="pricing" class="pricing">
   <div class="section-head reveal">
     <span class="section-tag">Pricing</span>
-    <h2 class="section-title">Free to start. <em>Pay only if you lead.</em></h2>
-    <p class="section-sub">The free tier covers everything most pilgrims need. Upgrade if you're organising a group, splitting bills, or carrying responsibility.</p>
+    <h2 class="section-title">Built to be <em>fairly priced.</em></h2>
+    <p class="section-sub">We're finalising plans so Wasl Pro stays affordable for every pilgrim — and free through our agency &amp; hotel partners.</p>
   </div>
 
-  <div class="price-grid">
-    <div class="price-card reveal">
-      <div class="price-tier">For every pilgrim</div>
-      <div class="price-name">Free</div>
-      <div class="price-tag">
-        <span class="price-amount">$0</span>
-        <span class="price-period">forever</span>
+  <div class="price-wrap reveal">
+    <div class="price-card-soon">
+      <div class="price-stamp">★ Coming Soon ★</div>
+      <h3>Pricing will be <em>announced shortly.</em></h3>
+      <p>Free tier — Quran, prayer times, group join, manual bill split — will always be available. Pro pricing for group leaders and OCR users is being finalised with our partner agencies and hotels. Leave your email and we'll let you know the moment it's live.</p>
+      <form class="notify-form" onsubmit="event.preventDefault();this.querySelector('button').textContent='✓ You\'re on the list'">
+        <input type="email" placeholder="you@example.com" required />
+        <button type="submit">Notify me</button>
+      </form>
+      <div class="price-hint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        Travelling through a partner agency or hotel? You'll get Pro free.
       </div>
-      <ul class="price-list">
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Full Umrah Guide & du'as</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Pin your accommodation</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Join a group via QR code</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Group map (read-only)</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Manual bill split</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Crowd awareness & Qibla</li>
-      </ul>
-      <button class="price-cta fill">Download free</button>
-    </div>
-
-    <div class="price-card featured reveal">
-      <div class="price-tier">For group leaders</div>
-      <div class="price-name">Paid</div>
-      <div class="price-tag">
-        <span class="price-amount">$9.99</span>
-        <span class="price-period">/ trip · or $24.99/year</span>
-      </div>
-      <ul class="price-list">
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Everything in Free, plus —</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Create groups & manage members</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Full chat, voice notes, calls</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>OCR receipts + per-item split</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Multi-currency, rate-locked</li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Lost Pilgrim Helper · SOS · AI Planner</li>
-      </ul>
-      <button class="price-cta gold">Start your free trip</button>
     </div>
   </div>
 </section>
@@ -835,17 +1486,17 @@
 <section id="download" class="final-cta">
   <div class="final-cta-inner">
     <h2>Travel light. <em>Stay together.</em></h2>
-    <p>Join thousands of pilgrims preparing for Umrah and Hajj with the companion that's honest about what it can — and can't — do.</p>
+    <p>Join the pilgrims preparing for Umrah and Hajj with the honest, all-in-one companion. Currently in Internal Testing — early access opens soon.</p>
     <div class="final-ctas">
       <a href="#" class="btn-gold">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
-        App Store
+        App Store · iOS soon
       </a>
       <a href="#" class="btn-gold">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3.5 20.5V3.5c0-.6.3-1.1.8-1.4l9.7 9.9-9.7 9.9c-.5-.3-.8-.8-.8-1.4zm10.7-9l2.3 2.3-9.4 5.4 7.1-7.7zm0-1.4L7.1 2.4l9.4 5.4-2.3 2.3zm6.5 4.5c.6-.4.8-1 .8-1.6s-.3-1.2-.8-1.6l-2.5-1.4-2.5 2.5 2.5 2.5 2.5-1.4z"/></svg>
-        Google Play
+        Play Store · Internal Testing
       </a>
-      <a href="#features" class="btn-ghost">Learn more →</a>
+      <a href="#partners" class="btn-ghost">For partners →</a>
     </div>
   </div>
 </section>
@@ -856,44 +1507,58 @@
     <div class="foot-brand">
       <a href="#" class="logo">
         <span class="logo-mark">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#D6B25E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2 L4 8 L4 18 L12 22 L20 18 L20 8 Z"/>
-            <circle cx="12" cy="12" r="3" fill="#D6B25E" stroke="none"/>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#D6B25E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2 C8 4, 6 7, 6 12 L6 18 C6 20, 8 22, 12 22 C16 22, 18 20, 18 18 L18 12 C18 7, 16 4, 12 2 Z"/>
+            <path d="M9 12 L15 12"/>
+            <circle cx="12" cy="6" r="1" fill="#D6B25E"/>
           </svg>
         </span>
-        Wasl
+        <span class="logo-text-wrap">Wasl<span class="logo-arabic">وصل</span></span>
       </a>
-      <p>The honest companion for groups going for Umrah and Hajj. Built with reverence for the journey.</p>
+      <p>The honest, all-in-one companion for pilgrims and the everyday Muslim. Built with reverence — and care.</p>
     </div>
     <div class="foot-col">
       <h5>Product</h5>
       <a href="#features">Features</a>
+      <a href="#honesty">How it works</a>
       <a href="#pricing">Pricing</a>
-      <a href="#download">Download</a>
-      <a href="#">Changelog</a>
+      <a href="#download">Get the app</a>
     </div>
     <div class="foot-col">
-      <h5>Company</h5>
-      <a href="#">About</a>
-      <a href="#">Contact</a>
+      <h5>Partners</h5>
+      <a href="#partners">Travel agencies</a>
+      <a href="#partners">Hotels in Saudi</a>
+      <a href="mailto:partners@wasl.app">partners@wasl.app</a>
       <a href="#">Press kit</a>
-      <a href="#">Careers</a>
     </div>
     <div class="foot-col">
       <h5>Resources</h5>
       <a href="#">Help center</a>
       <a href="#">Privacy</a>
       <a href="#">Terms</a>
-      <a href="#">Imprint</a>
+      <a href="mailto:hello@wasl.app">Contact</a>
     </div>
   </div>
   <div class="foot-bottom">
-    <span>© 2026 Wasl. All rights reserved.</span>
+    <span>© 2026 Wasl. Built in Malaysia · For the Ummah.</span>
     <span class="foot-arabic">وَفِّقْنَا · May Allah grant us success</span>
   </div>
 </footer>
 
 <script>
+  // Cursor glow
+  const glow = document.getElementById('cursorGlow');
+  let glowX = 0, glowY = 0, targetX = 0, targetY = 0;
+  document.addEventListener('mousemove', e => { targetX = e.clientX; targetY = e.clientY; });
+  function loop(){
+    glowX += (targetX - glowX) * 0.12;
+    glowY += (targetY - glowY) * 0.12;
+    glow.style.left = glowX + 'px';
+    glow.style.top = glowY + 'px';
+    requestAnimationFrame(loop);
+  }
+  loop();
+
   // Nav scroll state
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => {
@@ -904,46 +1569,75 @@
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
   }, { threshold: 0.15 });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => io.observe(el));
 
-  // Interactive feature panel
+  // ── Phone screen switcher
+  const tabs = document.querySelectorAll('.screen-tab');
+  const screens = document.querySelectorAll('.screen');
+  let screenIdx = 0;
+  const screenOrder = ['home','map','quran','bills','sos'];
+
+  function showScreen(name){
+    screens.forEach(s => s.classList.toggle('active', s.dataset.screen === name));
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.target === name));
+    screenIdx = screenOrder.indexOf(name);
+  }
+
+  let userTouchedPhone = false;
+  tabs.forEach(t => t.addEventListener('click', () => {
+    userTouchedPhone = true;
+    showScreen(t.dataset.target);
+  }));
+
+  // Auto-cycle screens every 4.5s until user clicks
+  setInterval(() => {
+    if (userTouchedPhone) return;
+    screenIdx = (screenIdx + 1) % screenOrder.length;
+    showScreen(screenOrder[screenIdx]);
+  }, 4500);
+
+  // ── Feature carousel
   const featData = [
-    {
-      title:'Pinpoint, Zone, Last Seen',
-      desc:'Other apps lie about indoor GPS. We don\'t. Wasl uses pre-mapped zones inside the Haram so you always know roughly where your group is — even in the densest crowds.',
+    { title:'Emerald Cockpit map',
+      desc:'Real-time member positions on a beautifully styled Mapbox base. Proximity zones, meeting points, offline pins. Powered by Firebase RTDB so locations update instantly across every device.',
       meta:'FREE FOR EVERYONE',
-      icon:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
-    },
-    {
-      title:'Receipts, split fairly',
-      desc:'Snap the receipt, Wasl reads each item, and you assign people to dishes. Currency rates lock at purchase time — no fights about Riyal-to-Ringgit later.',
-      meta:'PAID · OCR + MULTI-CURRENCY',
-      icon:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><line x1="9" y1="9" x2="11" y2="9"/></svg>'
-    },
-    {
-      title:'Reunite the lost in minutes',
-      desc:'You find an elderly pilgrim with no phone, scared and lost. Wasl translates into their language, queries other groups in the city, and finds their family — fast.',
+      icon:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' },
+    { title:'114 surahs, always with you',
+      desc:'Tajweed colouring, top-tier qari recitations, bookmarks, last-read tracking, shareable ayah cards. Available the moment you open the app — Wi-Fi or none.',
+      meta:'FREE · 100% OFFLINE',
+      icon:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>' },
+    { title:'Prayers fire on time',
+      desc:'Exact-alarm scheduling beats the Android battery saver. Hanafi Asr, multiple calculation methods, adhan sounds, opt-out toggles. Never miss a salah.',
+      meta:'FREE · EXACT-ALARM SCHEDULING',
+      icon:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>' },
+    { title:'Receipts that split themselves',
+      desc:'Snap the receipt — Gemini Vision OCR reads it (tuned for Arabic + bilingual Gulf receipts). Tabscanner as fallback, ML Kit offline. Assign per item or split equally. Cent-accurate, UID-keyed.',
+      meta:'PAID · GEMINI + ML KIT',
+      icon:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg>' },
+    { title:'Talk, share, plan together',
+      desc:'Text, images, voice notes, emoji, typing indicators. Admin tools for join requests, member approvals and graceful group-switch flows. Free members can read; Paid speak.',
+      meta:'PAID · GROUP-WIDE',
+      icon:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>' },
+    { title:'Reunite the lost in minutes',
+      desc:'Find an elderly pilgrim with no phone. Enter their group code — Wasl shows their group live on a map and translates between languages instantly. The story behind Wasl.',
       meta:'PAID · OUR HEADLINE FEATURE',
-      icon:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>'
-    },
-    {
-      title:'Live crowd intelligence',
-      desc:'Density signals across the Mataf, Sa\'i, and prayer halls update in real time. Pick the calmest gate, the best moment, the right floor — without guessing.',
-      meta:'FREE · UPDATES EVERY MINUTE',
-      icon:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>'
-    },
-    {
-      title:'Authenticated rituals, offline',
-      desc:'Tawaf, Sa\'i, Halq, Ihram — every step in Arabic with transliteration and translation. Reviewed by scholars, available without signal.',
-      meta:'FREE · WORKS OFFLINE',
-      icon:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>'
-    },
-    {
-      title:'When your battery dies',
-      desc:'At 5% Wasl auto-broadcasts your zone, hotel, and meeting points to your group. Even if your phone shuts off, your group knows where to look.',
+      icon:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' },
+    { title:'Findable until the battery dies',
+      desc:'Three-layer overnight tracking: foreground service, WorkManager heartbeat (encrypted), battery-exemption prompt. At 5% Wasl auto-broadcasts your zone, hotel, and meeting points.',
       meta:'PAID · AUTOMATIC',
-      icon:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>'
-    },
+      icon:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>' },
+    { title:'Iman that lasts beyond the trip',
+      desc:'Asma ul-Husna reflections with audio. Short, beautiful Quran Stories. Tuesday + Friday nudges (per-user time zone) keep you engaged year-round — not just during your seven days.',
+      meta:'FREE · DAILY GENTLE NUDGES',
+      icon:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>' },
+    { title:'Pin home, find it always',
+      desc:'Mapbox geocoding searches and pins your hotel. Share with the group. Return to it from anywhere — especially helpful when the keyboard is in Arabic or Bengali.',
+      meta:'PAID · MAPBOX GEOCODING',
+      icon:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>' },
+    { title:'Visibility, on your terms',
+      desc:'When someone uses Lost Pilgrim Helper to locate you, your group is notified with a blinker dot. One tap revokes access. Privacy by design — rolling out after Hajj testing.',
+      meta:'COMING SOON · PRIVACY LAYER',
+      icon:'<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>' },
   ];
 
   const items = document.querySelectorAll('.feat-item');
@@ -960,25 +1654,28 @@
       const idx = parseInt(item.dataset.feat, 10);
       const d = featData[idx];
       vPanel.style.opacity = 0;
+      vPanel.style.transform = 'translateY(10px)';
       setTimeout(() => {
         vTitle.textContent = d.title;
         vDesc.textContent = d.desc;
         vMeta.textContent = d.meta;
         vIcon.innerHTML = d.icon;
         vPanel.style.opacity = 1;
-      }, 200);
+        vPanel.style.transform = 'translateY(0)';
+      }, 220);
     });
   });
 
-  // Auto-cycle features every 5s if user hasn't interacted
-  let userClicked = false;
-  items.forEach(i => i.addEventListener('click', () => userClicked = true));
+  // Auto-cycle features every 5.5s until user interacts
+  let userClickedFeat = false;
+  items.forEach(i => i.addEventListener('click', () => userClickedFeat = true));
   let autoIdx = 0;
   setInterval(() => {
-    if (userClicked) return;
+    if (userClickedFeat) return;
     autoIdx = (autoIdx + 1) % items.length;
     items[autoIdx].click();
-  }, 5000);
+    userClickedFeat = false; // reset since simulated click shouldn't count
+  }, 5500);
 </script>
 </body>
 </html>
