@@ -701,6 +701,93 @@
     position:relative;z-index:2;line-height:1.4;
   }
 
+  /* ── UPCOMING FEATURES ────────────────────────────── */
+  .upcoming{
+    background:var(--ivory);
+    position:relative;overflow:hidden;
+  }
+  .upcoming::before{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'><g fill='none' stroke='%230B2E26' stroke-width='0.4' opacity='0.04'><path d='M30 0L60 30L30 60L0 30Z'/><circle cx='30' cy='30' r='12'/></g></svg>");
+  }
+  .upcoming-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:24px;
+    max-width:1100px;margin:0 auto;position:relative;z-index:2;
+  }
+  .upcoming-card{
+    background:#fff;border-radius:24px;padding:40px 36px;
+    border:1px solid var(--border);
+    position:relative;overflow:hidden;
+    transition:transform .4s, box-shadow .4s, border-color .4s;
+  }
+  .upcoming-card::before{
+    content:'';position:absolute;top:-60%;right:-40%;
+    width:380px;height:380px;border-radius:50%;
+    background:radial-gradient(circle, rgba(214,178,94,0.1), transparent 70%);
+    transition:transform .6s;pointer-events:none;
+  }
+  .upcoming-card:hover{
+    transform:translateY(-6px);
+    border-color:rgba(214,178,94,0.4);
+    box-shadow:0 30px 60px rgba(11,46,38,0.08);
+  }
+  .upcoming-card:hover::before{transform:scale(1.2)}
+  .coming-badge{
+    position:absolute;top:24px;right:24px;
+    display:inline-flex;align-items:center;gap:6px;
+    padding:6px 12px;border-radius:999px;
+    background:var(--gold-pale);color:#7B5800;
+    font-size:10px;font-weight:700;letter-spacing:1.2px;
+    text-transform:uppercase;
+    border:1px dashed var(--gold-deep);
+    z-index:3;
+  }
+  .coming-badge::before{
+    content:'';width:5px;height:5px;border-radius:50%;
+    background:var(--gold-deep);
+    animation:pulse 2s ease infinite;
+  }
+  .upcoming-ic{
+    width:60px;height:60px;border-radius:16px;
+    background:linear-gradient(135deg,var(--emerald-1),var(--emerald-2));
+    display:grid;place-items:center;color:var(--gold);margin-bottom:24px;
+    transition:transform .3s;
+    position:relative;z-index:2;
+    box-shadow:0 8px 20px rgba(11,46,38,0.15);
+  }
+  .upcoming-card:hover .upcoming-ic{transform:rotate(-6deg) scale(1.05)}
+  .upcoming-card h3{
+    font-family:var(--display);font-size:30px;font-weight:600;
+    color:var(--emerald-1);margin-bottom:8px;letter-spacing:-0.4px;
+    position:relative;z-index:2;
+  }
+  .upcoming-tagline{
+    font-family:var(--display);font-size:18px;font-style:italic;
+    color:var(--gold-deep);font-weight:500;margin-bottom:18px;
+    position:relative;z-index:2;
+  }
+  .upcoming-card p{
+    font-size:14.5px;color:var(--muted);line-height:1.7;
+    position:relative;z-index:2;
+  }
+  .upcoming-fineprint{
+    margin-top:16px;padding-top:14px;border-top:1px solid var(--border);
+    font-size:11.5px;color:var(--muted);font-style:italic;
+    display:flex;align-items:flex-start;gap:8px;
+    position:relative;z-index:2;
+  }
+  .upcoming-fineprint svg{flex-shrink:0;margin-top:2px;color:var(--gold-deep);width:13px;height:13px}
+  .upcoming-waitlist{
+    text-align:center;margin-top:50px;position:relative;z-index:2;
+    font-size:14px;color:var(--muted);
+  }
+  .upcoming-waitlist a{
+    color:var(--emerald-1);font-weight:600;text-decoration:none;
+    border-bottom:1.5px solid var(--gold);padding-bottom:1px;
+    transition:color .2s;
+  }
+  .upcoming-waitlist a:hover{color:var(--gold-deep)}
+
   /* ── PARTNER PROGRAM ──────────────────────────────── */
   .partners{
     background:var(--emerald-deep);color:#fff;
@@ -926,7 +1013,8 @@
     .feat-list{max-height:none}
     .feat-visual{position:static;height:420px;padding:30px}
     .visual-panel h4{font-size:28px}
-    .modes,.daily-grid,.partners-grid{grid-template-columns:1fr;gap:18px}
+    .modes,.daily-grid,.partners-grid,.upcoming-grid{grid-template-columns:1fr;gap:18px}
+    .coming-badge{top:20px;right:20px;padding:5px 10px;font-size:9.5px}
     .foot-grid{grid-template-columns:1fr 1fr;gap:30px}
     .foot-bottom{flex-direction:column;gap:14px;text-align:center}
     .trust-marquee{gap:32px;animation-duration:25s}
@@ -968,6 +1056,7 @@
   <div class="nav-links">
     <a href="#features">Features</a>
     <a href="#honesty">How it works</a>
+    <a href="#upcoming">Upcoming</a>
     <a href="#partners">For Partners</a>
     <a href="#pricing">Pricing</a>
     <a href="#download" class="nav-cta">Get the app</a>
@@ -1410,6 +1499,59 @@
   </div>
 </section>
 
+<!-- ═══ UPCOMING FEATURES ═══ -->
+<section id="upcoming" class="upcoming">
+  <div class="section-head reveal">
+    <span class="section-tag">On the horizon</span>
+    <h2 class="section-title">Thoughtful features, <em>arriving soon.</em></h2>
+    <p class="section-sub">Two upcoming additions built with the same intention: keep your group together, keep every pilgrim safe — and let Wasl do the planning so you can focus on your worship.</p>
+  </div>
+
+  <div class="upcoming-grid">
+    <div class="upcoming-card reveal">
+      <span class="coming-badge">Coming Soon</span>
+      <div class="upcoming-ic">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
+          <path d="M20 3v4"/>
+          <path d="M22 5h-4"/>
+          <path d="M4 17v2"/>
+          <path d="M5 18H3"/>
+        </svg>
+      </div>
+      <h3>AI Umrah Planner</h3>
+      <div class="upcoming-tagline">Your group's own Umrah concierge.</div>
+      <p>Ask in plain words and get instant, group-aware suggestions — halal places to eat for your group size, transport to the Haram, quiet rest spots, the nearest pharmacy — each with distance and rough cost. Unlike a general chatbot, the planner knows <em>your</em> trip: how many you are, where your group members are, your prayer times, your budget. Suggestions flow straight into your group chat, meeting points, and bill split — so planning stays inside the app, together.</p>
+    </div>
+
+    <div class="upcoming-card reveal">
+      <span class="coming-badge">Coming Soon</span>
+      <div class="upcoming-ic">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="3.5"/>
+          <path d="M12 2v1.5"/>
+          <path d="M18.5 8H20"/>
+          <path d="M4 8h1.5"/>
+          <path d="M16.95 3.05l-1.06 1.06"/>
+          <path d="M8.11 3.05l1.06 1.06"/>
+          <path d="M12 14c2.5 4 4 5.5 4 7.5a4 4 0 0 1-8 0c0-2 1.5-3.5 4-7.5z"/>
+        </svg>
+      </div>
+      <h3>Heat &amp; Hydration Guard</h3>
+      <div class="upcoming-tagline">Stay safe in the heat — guidance built around your health.</div>
+      <p>Set up a private one-time health profile, and Wasl watches the live heat and humidity (wet-bulb temperature) wherever you are. Get personal warnings before conditions turn dangerous, gentle hydration reminders with the nearest Zamzam station, and a one-tap "I drank water" log. Group leaders see each member's heat-risk level at a glance — so no one gets overlooked in the crowd.</p>
+      <div class="upcoming-fineprint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        General wellness guidance — not a substitute for medical advice.
+      </div>
+    </div>
+  </div>
+
+  <div class="upcoming-waitlist reveal">
+    Want early access? <a href="#pricing">Join the waitlist</a>.
+  </div>
+</section>
+
 <!-- ═══ PARTNER PROGRAM ═══ -->
 <section id="partners" class="partners">
   <div class="section-head reveal">
@@ -1449,7 +1591,7 @@
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Pre-pinned hotel location in every guest's app</li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Premium guest amenity, zero per-room cost</li>
       </ul>
-      <a href="mailto:partners@wasl.my?subject=Hotel%20partnership" class="partner-cta">
+      <a href="mailto:partners@wasl.app?subject=Hotel%20partnership" class="partner-cta">
         Become a hotel partner
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
